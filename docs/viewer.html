@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simply Published</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            background: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: #1f2328;
+            background: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        #create_mode {
+            width: min(960px, calc(100% - 40px));
+            margin: 36px auto;
+            padding: 28px;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        #create_mode h1 {
+            margin: 0 0 10px;
+            font-size: 30px;
+            line-height: 1.25;
+        }
+
+        #create_mode p {
+            margin: 0 0 18px;
+        }
+
+        .text-input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        #text_input {
+            width: 100%;
+            min-height: 360px;
+            padding: 14px;
+            overflow: auto;
+            resize: vertical;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            color: #1f2328;
+            background: #ffffff;
+            border: 1px solid #8c959f;
+            border-radius: 6px;
+            outline: none;
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+            line-height: 1.5;
+        }
+
+        #text_input:focus {
+            border-color: #0969da;
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.16);
+        }
+
+        .status-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 8px 20px;
+            margin-top: 8px;
+            color: #57606a;
+            font-size: 14px;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 18px;
+            color: #ffffff;
+            background: #0969da;
+            border: 1px solid #0969da;
+            border-radius: 6px;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 700;
+        }
+
+        button:hover,
+        button:focus {
+            background: #075bbd;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        #message_output,
+        #url_output_container {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 6px;
+        }
+
+        #message_output {
+            display: none;
+        }
+
+        #message_output.success {
+            display: block;
+            background: #dafbe1;
+            border: 1px solid #4ac26b;
+        }
+
+        #message_output.error {
+            display: block;
+            background: #ffebe9;
+            border: 1px solid #ff8182;
+        }
+
+        #url_output_container {
+            display: none;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+        }
+
+        #url_output_container.visible {
+            display: block;
+        }
+
+        #generated_url {
+            display: block;
+            margin-top: 8px;
+            overflow-wrap: anywhere;
+            color: #0969da;
+        }
+
+        .small-note {
+            margin-top: 18px !important;
+            color: #57606a;
+            font-size: 14px;
+        }
+
+        #view_mode {
+            display: none;
+        }
+
+        #view_mode.visible {
+            display: block;
+        }
+
+        #markdown_document {
+            width: min(900px, calc(100% - 48px));
+            margin: 40px auto;
+            overflow-wrap: anywhere;
+        }
+
+        #markdown_document > :first-child {
+            margin-top: 0;
+        }
+
+        #markdown_document > :last-child {
+            margin-bottom: 0;
+        }
+
+        #markdown_document h1,
+        #markdown_document h2,
+        #markdown_document h3,
+        #markdown_document h4,
+        #markdown_document h5,
+        #markdown_document h6 {
+            margin-top: 1.5em;
+            margin-bottom: 0.55em;
+            line-height: 1.25;
+            page-break-after: avoid;
+            break-after: avoid-page;
+        }
+
+        #markdown_document h1,
+        #markdown_document h2 {
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #d8dee4;
+        }
+
+        #markdown_document h1 { font-size: 2em; }
+        #markdown_document h2 { font-size: 1.5em; }
+        #markdown_document h3 { font-size: 1.25em; }
+        #markdown_document h4 { font-size: 1em; }
+        #markdown_document h5 { font-size: 0.875em; }
+        #markdown_document h6 { font-size: 0.85em; color: #57606a; }
+
+        #markdown_document p {
+            margin: 0 0 1em;
+        }
+
+        #markdown_document a {
+            color: #0969da;
+            text-decoration: underline;
+        }
+
+        #markdown_document img {
+            max-width: 100%;
+            height: auto;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        #markdown_document blockquote {
+            margin: 0 0 1em;
+            padding: 0 1em;
+            color: #57606a;
+            border-left: 4px solid #d0d7de;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        #markdown_document blockquote > :last-child {
+            margin-bottom: 0;
+        }
+
+        #markdown_document code {
+            padding: 0.15em 0.35em;
+            background: #eff1f3;
+            border-radius: 4px;
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+            font-size: 0.9em;
+        }
+
+        #markdown_document pre {
+            margin: 0 0 1em;
+            padding: 16px;
+            overflow: auto;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        #markdown_document pre code {
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+            font-size: 0.9em;
+        }
+
+        #markdown_document ul,
+        #markdown_document ol {
+            margin: 0 0 1em;
+            padding-left: 2em;
+        }
+
+        #markdown_document li + li {
+            margin-top: 0.2em;
+        }
+
+        #markdown_document li > ul,
+        #markdown_document li > ol {
+            margin-top: 0.2em;
+            margin-bottom: 0;
+        }
+
+        #markdown_document .task-list-item {
+            list-style: none;
+        }
+
+        #markdown_document .task-list-item input {
+            margin: 0 0.45em 0 -1.4em;
+            vertical-align: middle;
+        }
+
+        #markdown_document hr {
+            height: 1px;
+            margin: 1.5em 0;
+            background: #d8dee4;
+            border: 0;
+        }
+
+        #markdown_document table {
+            display: block;
+            width: max-content;
+            max-width: 100%;
+            margin: 0 0 1em;
+            overflow-x: auto;
+            border-collapse: collapse;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        #markdown_document th,
+        #markdown_document td {
+            padding: 6px 13px;
+            border: 1px solid #d0d7de;
+        }
+
+        #markdown_document th {
+            font-weight: 700;
+            background: #f6f8fa;
+        }
+
+        #markdown_document tr:nth-child(even) td {
+            background: #f6f8fa;
+        }
+
+        #view_error {
+            display: none;
+            width: min(760px, calc(100% - 48px));
+            margin: 40px auto;
+            padding: 16px;
+            background: #ffebe9;
+            border: 1px solid #ff8182;
+            border-radius: 6px;
+        }
+
+        #view_error.visible {
+            display: block;
+        }
+
+        @media (max-width: 640px) {
+            #create_mode {
+                width: calc(100% - 24px);
+                margin: 12px auto;
+                padding: 18px;
+            }
+
+            #markdown_document {
+                width: calc(100% - 28px);
+                margin: 20px auto;
+            }
+        }
+
+        @media print {
+            @page {
+                margin: 18mm;
+            }
+
+            body {
+                color: #000000;
+                background: #ffffff;
+                font-size: 11pt;
+                line-height: 1.45;
+            }
+
+            #create_mode,
+            #view_error {
+                display: none !important;
+            }
+
+            #view_mode.visible {
+                display: block !important;
+            }
+
+            #markdown_document {
+                width: auto;
+                max-width: none;
+                margin: 0;
+            }
+
+            #markdown_document a {
+                color: #000000;
+                text-decoration: underline;
+            }
+
+            #markdown_document pre,
+            #markdown_document blockquote,
+            #markdown_document table,
+            #markdown_document img,
+            #markdown_document li {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            #markdown_document table {
+                display: table;
+                width: 100%;
+                overflow: visible;
+            }
+
+            #markdown_document pre {
+                white-space: pre-wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main id="create_mode">
+        <h1>Publisher</h1>
+        <p>Enter Markdown, then generate a URL that opens as a clean rendered document.</p>
+
+        <label class="text-input-label" for="text_input">Markdown text</label>
+        <div id="text_input" contenteditable="true" role="textbox" aria-multiline="true" spellcheck="true"></div>
+
+        <div class="status-row">
+            <span id="character_count">0 characters</span>
+            <span id="url_length_status">URL length: calculating...</span>
+        </div>
+
+        <div class="button-row">
+            <button id="generate_url_button" type="button">Generate URL</button>
+            <button id="copy_url_button" type="button" disabled>Copy URL</button>
+        </div>
+
+        <div id="message_output" aria-live="polite"></div>
+
+        <div id="url_output_container">
+            <strong>Generated view URL</strong>
+            <a id="generated_url" href="#"></a>
+        </div>
+
+        <p class="small-note">
+            The maximum generated URL length is 65,536 characters. The page automatically selects plain Base64URL or
+            DEFLATE-compressed Base64URL encoding, whichever is shorter. This obscures and compresses the text but does
+            not encrypt it. Raw HTML in Markdown is displayed as text.
+        </p>
+    </main>
+
+    <main id="view_mode">
+        <article id="markdown_document"></article>
+    </main>
+
+    <div id="view_error" role="alert"></div>
+
+    <script>
+        "use strict";
+
+        var maximum_url_length = 65536;
+        var encoded_text_parameter_name = "text";
+        var plain_mode_prefix = "p";
+        var compressed_mode_prefix = "c";
+        var last_valid_text = "";
+        var status_update_number = 0;
+
+        var create_mode = document.getElementById("create_mode");
+        var view_mode = document.getElementById("view_mode");
+        var markdown_document = document.getElementById("markdown_document");
+        var view_error = document.getElementById("view_error");
+        var text_input = document.getElementById("text_input");
+        var character_count = document.getElementById("character_count");
+        var url_length_status = document.getElementById("url_length_status");
+        var generate_url_button = document.getElementById("generate_url_button");
+        var copy_url_button = document.getElementById("copy_url_button");
+        var message_output = document.getElementById("message_output");
+        var url_output_container = document.getElementById("url_output_container");
+        var generated_url = document.getElementById("generated_url");
+
+        function get_clean_page_url() {
+            return window.location.href.split("?")[0].split("#")[0];
+        }
+
+        function get_plain_text() {
+            return text_input.innerText.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+        }
+
+        function set_plain_text(text_value) {
+            text_input.textContent = text_value;
+        }
+
+        function bytes_to_base64url(byte_values) {
+            var binary_value = "";
+            var chunk_size = 32768;
+            var index_value = 0;
+
+            for (index_value = 0; index_value < byte_values.length; index_value += chunk_size) {
+                binary_value += String.fromCharCode.apply(null, byte_values.subarray(index_value, index_value + chunk_size));
+            }
+
+            return btoa(binary_value).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+        }
+
+        function base64url_to_bytes(base64url_value) {
+            var base64_value = base64url_value.replace(/-/g, "+").replace(/_/g, "/");
+            var padding_length = (4 - (base64_value.length % 4)) % 4;
+            var binary_value = "";
+            var byte_values = null;
+            var index_value = 0;
+
+            if (/^[A-Za-z0-9_-]*$/.test(base64url_value) === false) {
+                throw new Error("The encoded text contains invalid Base64URL characters.");
+            }
+
+            base64_value += "=".repeat(padding_length);
+            binary_value = atob(base64_value);
+            byte_values = new Uint8Array(binary_value.length);
+
+            for (index_value = 0; index_value < binary_value.length; index_value++) {
+                byte_values[index_value] = binary_value.charCodeAt(index_value);
+            }
+
+            return byte_values;
+        }
+
+        function compress_bytes(byte_values) {
+            var compression_stream = new CompressionStream("deflate");
+            var writer_value = compression_stream.writable.getWriter();
+
+            writer_value.write(byte_values);
+            writer_value.close();
+
+            return new Response(compression_stream.readable).arrayBuffer().then(function (buffer_value) {
+                return new Uint8Array(buffer_value);
+            });
+        }
+
+        function decompress_bytes(byte_values) {
+            var decompression_stream = new DecompressionStream("deflate");
+            var writer_value = decompression_stream.writable.getWriter();
+
+            writer_value.write(byte_values);
+            writer_value.close();
+
+            return new Response(decompression_stream.readable).arrayBuffer().then(function (buffer_value) {
+                return new Uint8Array(buffer_value);
+            });
+        }
+
+        function encode_text_both_modes(text_value) {
+            var utf8_bytes = new TextEncoder().encode(text_value);
+            var plain_value = plain_mode_prefix + bytes_to_base64url(utf8_bytes);
+
+            if (typeof CompressionStream === "undefined") {
+                return Promise.resolve({
+                    encoded_value: plain_value,
+                    mode_name: "Plain Base64URL"
+                });
+            }
+
+            return compress_bytes(utf8_bytes).then(function (compressed_bytes) {
+                var compressed_value = compressed_mode_prefix + bytes_to_base64url(compressed_bytes);
+
+                if (compressed_value.length < plain_value.length) {
+                    return {
+                        encoded_value: compressed_value,
+                        mode_name: "Compressed DEFLATE + Base64URL"
+                    };
+                }
+
+                return {
+                    encoded_value: plain_value,
+                    mode_name: "Plain Base64URL"
+                };
+            });
+        }
+
+        function create_url_from_encoded_value(encoded_value) {
+            return get_clean_page_url() + "?" + encoded_text_parameter_name + "=" + encoded_value;
+        }
+
+        function create_best_url_from_text(text_value) {
+            return encode_text_both_modes(text_value).then(function (encoding_result) {
+                encoding_result.url_value = create_url_from_encoded_value(encoding_result.encoded_value);
+                return encoding_result;
+            });
+        }
+
+        function decode_text_value(encoded_value) {
+            var mode_prefix = encoded_value.substring(0, 1);
+            var base64url_value = encoded_value.substring(1);
+            var byte_values = null;
+
+            if (base64url_value === "") {
+                return Promise.reject(new Error("The encoded text is empty."));
+            }
+
+            byte_values = base64url_to_bytes(base64url_value);
+
+            if (mode_prefix === plain_mode_prefix) {
+                return Promise.resolve(new TextDecoder("utf-8", { fatal: true }).decode(byte_values));
+            }
+
+            if (mode_prefix === compressed_mode_prefix) {
+                if (typeof DecompressionStream === "undefined") {
+                    return Promise.reject(new Error("This browser does not support DEFLATE decompression."));
+                }
+
+                return decompress_bytes(byte_values).then(function (decompressed_bytes) {
+                    return new TextDecoder("utf-8", { fatal: true }).decode(decompressed_bytes);
+                });
+            }
+
+            return Promise.reject(new Error("The URL contains an unknown text encoding mode."));
+        }
+
+        function escape_html(text_value) {
+            return text_value
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function escape_attribute(text_value) {
+            return escape_html(text_value).replace(/`/g, "&#96;");
+        }
+
+        function is_safe_url(url_value, image_mode) {
+            var trimmed_value = url_value.trim();
+            var lower_value = trimmed_value.toLowerCase();
+
+            if (trimmed_value === "") {
+                return false;
+            }
+
+            if (lower_value.indexOf("javascript:") === 0 || lower_value.indexOf("vbscript:") === 0) {
+                return false;
+            }
+
+            if (lower_value.indexOf("data:") === 0) {
+                if (image_mode === true && /^data:image\/(png|gif|jpeg|jpg|webp);base64,/i.test(trimmed_value) === true) {
+                    return true;
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        function make_placeholder(store_values, html_value) {
+            var placeholder_value = "\uE000" + store_values.length + "\uE001";
+            store_values.push(html_value);
+            return placeholder_value;
+        }
+
+        function restore_placeholders(text_value, store_values) {
+            return text_value.replace(/\uE000(\d+)\uE001/g, function (match_value, index_value) {
+                return store_values[Number(index_value)];
+            });
+        }
+
+        function parse_inline(text_value) {
+            var stored_values = [];
+            var escaped_value = escape_html(text_value);
+
+            escaped_value = escaped_value.replace(/\\([\\`*{}\[\]()#+\-.!_>~|])/g, function (match_value, character_value) {
+                return make_placeholder(stored_values, character_value);
+            });
+
+            escaped_value = escaped_value.replace(/`([^`\n]+)`/g, function (match_value, code_value) {
+                return make_placeholder(stored_values, "<code>" + code_value + "</code>");
+            });
+
+            escaped_value = escaped_value.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+[&quot;]([^&]*?)[&quot;])?\)/g, function (match_value, alt_value, url_value, title_value) {
+                if (is_safe_url(url_value, true) === false) {
+                    return match_value;
+                }
+
+                var image_html = "<img src=\"" + escape_attribute(url_value) + "\" alt=\"" + escape_attribute(alt_value) + "\"";
+                if (title_value !== undefined) {
+                    image_html += " title=\"" + escape_attribute(title_value) + "\"";
+                }
+                image_html += ">";
+                return make_placeholder(stored_values, image_html);
+            });
+
+            escaped_value = escaped_value.replace(/\[([^\]]+)\]\(([^\s)]+)(?:\s+[&quot;]([^&]*?)[&quot;])?\)/g, function (match_value, label_value, url_value, title_value) {
+                if (is_safe_url(url_value, false) === false) {
+                    return match_value;
+                }
+
+                var link_html = "<a href=\"" + escape_attribute(url_value) + "\"";
+                if (title_value !== undefined) {
+                    link_html += " title=\"" + escape_attribute(title_value) + "\"";
+                }
+                link_html += ">" + label_value + "</a>";
+                return make_placeholder(stored_values, link_html);
+            });
+
+            escaped_value = escaped_value.replace(/&lt;((?:https?|ftp):\/\/[^&\s]+)&gt;/gi, function (match_value, url_value) {
+                return make_placeholder(stored_values, "<a href=\"" + escape_attribute(url_value) + "\">" + url_value + "</a>");
+            });
+
+            escaped_value = escaped_value.replace(/&lt;([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})&gt;/gi, function (match_value, email_value) {
+                return make_placeholder(stored_values, "<a href=\"mailto:" + escape_attribute(email_value) + "\">" + email_value + "</a>");
+            });
+
+            escaped_value = escaped_value.replace(/\*\*\*([^\n]+?)\*\*\*/g, "<strong><em>$1</em></strong>");
+            escaped_value = escaped_value.replace(/___([^\n]+?)___/g, "<strong><em>$1</em></strong>");
+            escaped_value = escaped_value.replace(/\*\*([^\n]+?)\*\*/g, "<strong>$1</strong>");
+            escaped_value = escaped_value.replace(/__([^\n]+?)__/g, "<strong>$1</strong>");
+            escaped_value = escaped_value.replace(/~~([^\n]+?)~~/g, "<del>$1</del>");
+            escaped_value = escaped_value.replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, "$1<em>$2</em>");
+            escaped_value = escaped_value.replace(/(^|[^_])_([^_\n]+?)_(?!_)/g, "$1<em>$2</em>");
+
+            escaped_value = escaped_value.replace(/(^|[\s(])((?:https?|ftp):\/\/[^\s<\uE000]+)/gi, function (match_value, prefix_value, url_value) {
+                var trailing_value = "";
+                while (/[.,!?;:]$/.test(url_value) === true) {
+                    trailing_value = url_value.slice(-1) + trailing_value;
+                    url_value = url_value.slice(0, -1);
+                }
+                return prefix_value + make_placeholder(stored_values, "<a href=\"" + escape_attribute(url_value) + "\">" + url_value + "</a>") + trailing_value;
+            });
+
+            escaped_value = escaped_value.replace(/(^|[\s(])([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})/gi, function (match_value, prefix_value, email_value) {
+                return prefix_value + make_placeholder(stored_values, "<a href=\"mailto:" + escape_attribute(email_value) + "\">" + email_value + "</a>");
+            });
+
+            escaped_value = escaped_value.replace(/ {2}\n/g, "<br>\n");
+            escaped_value = escaped_value.replace(/\n/g, "<br>\n");
+
+            return restore_placeholders(escaped_value, stored_values);
+        }
+
+        function split_table_row(line_value) {
+            var clean_value = line_value.trim();
+            if (clean_value.charAt(0) === "|") {
+                clean_value = clean_value.substring(1);
+            }
+            if (clean_value.charAt(clean_value.length - 1) === "|") {
+                clean_value = clean_value.substring(0, clean_value.length - 1);
+            }
+            return clean_value.split(/(?<!\\)\|/).map(function (cell_value) {
+                return cell_value.replace(/\\\|/g, "|").trim();
+            });
+        }
+
+        function parse_table_alignment(line_value) {
+            var cells_value = split_table_row(line_value);
+            var alignment_values = [];
+            var index_value = 0;
+            var cell_value = "";
+
+            for (index_value = 0; index_value < cells_value.length; index_value++) {
+                cell_value = cells_value[index_value];
+                if (/^:?-{3,}:?$/.test(cell_value) === false) {
+                    return null;
+                }
+                if (cell_value.charAt(0) === ":" && cell_value.charAt(cell_value.length - 1) === ":") {
+                    alignment_values.push("center");
+                } else if (cell_value.charAt(cell_value.length - 1) === ":") {
+                    alignment_values.push("right");
+                } else if (cell_value.charAt(0) === ":") {
+                    alignment_values.push("left");
+                } else {
+                    alignment_values.push("");
+                }
+            }
+            return alignment_values;
+        }
+
+        function render_table(lines_value, start_index) {
+            var header_cells = split_table_row(lines_value[start_index]);
+            var alignment_values = parse_table_alignment(lines_value[start_index + 1]);
+            var index_value = start_index + 2;
+            var row_cells = null;
+            var column_index = 0;
+            var html_value = "<table><thead><tr>";
+
+            if (alignment_values === null || header_cells.length !== alignment_values.length) {
+                return null;
+            }
+
+            for (column_index = 0; column_index < header_cells.length; column_index++) {
+                html_value += "<th" + (alignment_values[column_index] !== "" ? " style=\"text-align:" + alignment_values[column_index] + "\"" : "") + ">" + parse_inline(header_cells[column_index]) + "</th>";
+            }
+            html_value += "</tr></thead><tbody>";
+
+            while (index_value < lines_value.length && lines_value[index_value].trim() !== "" && lines_value[index_value].indexOf("|") !== -1) {
+                row_cells = split_table_row(lines_value[index_value]);
+                html_value += "<tr>";
+                for (column_index = 0; column_index < header_cells.length; column_index++) {
+                    html_value += "<td" + (alignment_values[column_index] !== "" ? " style=\"text-align:" + alignment_values[column_index] + "\"" : "") + ">" + parse_inline(row_cells[column_index] || "") + "</td>";
+                }
+                html_value += "</tr>";
+                index_value++;
+            }
+
+            html_value += "</tbody></table>";
+            return { html: html_value, next_index: index_value };
+        }
+
+        function render_list(lines_value, start_index) {
+            var first_match = lines_value[start_index].match(/^(\s*)([-+*]|\d+[.)])\s+(.*)$/);
+            var base_indent = first_match[1].replace(/\t/g, "    ").length;
+            var ordered_value = /^\d/.test(first_match[2]);
+            var tag_name = ordered_value === true ? "ol" : "ul";
+            var html_value = "<" + tag_name + ">";
+            var index_value = start_index;
+            var item_match = null;
+            var current_indent = 0;
+            var item_text = "";
+            var task_match = null;
+            var nested_result = null;
+
+            while (index_value < lines_value.length) {
+                item_match = lines_value[index_value].match(/^(\s*)([-+*]|\d+[.)])\s+(.*)$/);
+                if (item_match === null) {
+                    break;
+                }
+
+                current_indent = item_match[1].replace(/\t/g, "    ").length;
+                if (current_indent < base_indent) {
+                    break;
+                }
+                if (current_indent > base_indent) {
+                    nested_result = render_list(lines_value, index_value);
+                    html_value = html_value.replace(/<\/li>$/, nested_result.html + "</li>");
+                    index_value = nested_result.next_index;
+                    continue;
+                }
+                if ((/^\d/.test(item_match[2])) !== ordered_value) {
+                    break;
+                }
+
+                item_text = item_match[3];
+                task_match = item_text.match(/^\[([ xX])\]\s+(.*)$/);
+                if (task_match !== null) {
+                    html_value += "<li class=\"task-list-item\"><input type=\"checkbox\" disabled" + (task_match[1].toLowerCase() === "x" ? " checked" : "") + ">" + parse_inline(task_match[2]) + "</li>";
+                } else {
+                    html_value += "<li>" + parse_inline(item_text) + "</li>";
+                }
+                index_value++;
+            }
+
+            html_value += "</" + tag_name + ">";
+            return { html: html_value, next_index: index_value };
+        }
+
+        function render_markdown_blocks(markdown_value) {
+            var lines_value = markdown_value.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+            var html_parts = [];
+            var index_value = 0;
+            var line_value = "";
+            var fence_match = null;
+            var fence_marker = "";
+            var language_value = "";
+            var code_lines = [];
+            var quote_lines = [];
+            var paragraph_lines = [];
+            var table_result = null;
+            var list_result = null;
+            var heading_match = null;
+            var indented_lines = [];
+
+            function flush_paragraph() {
+                if (paragraph_lines.length > 0) {
+                    html_parts.push("<p>" + parse_inline(paragraph_lines.join("\n")) + "</p>");
+                    paragraph_lines = [];
+                }
+            }
+
+            while (index_value < lines_value.length) {
+                line_value = lines_value[index_value];
+
+                if (line_value.trim() === "") {
+                    flush_paragraph();
+                    index_value++;
+                    continue;
+                }
+
+                fence_match = line_value.match(/^\s*(```+|~~~+)\s*([^\s]*)\s*$/);
+                if (fence_match !== null) {
+                    flush_paragraph();
+                    fence_marker = fence_match[1];
+                    language_value = fence_match[2];
+                    code_lines = [];
+                    index_value++;
+                    while (index_value < lines_value.length && new RegExp("^\\s*" + fence_marker.charAt(0) + "{" + fence_marker.length + ",}\\s*$").test(lines_value[index_value]) === false) {
+                        code_lines.push(lines_value[index_value]);
+                        index_value++;
+                    }
+                    if (index_value < lines_value.length) {
+                        index_value++;
+                    }
+                    html_parts.push("<pre><code" + (language_value !== "" ? " class=\"language-" + escape_attribute(language_value) + "\"" : "") + ">" + escape_html(code_lines.join("\n")) + "</code></pre>");
+                    continue;
+                }
+
+                if (/^( {4}|\t)/.test(line_value) === true) {
+                    flush_paragraph();
+                    indented_lines = [];
+                    while (index_value < lines_value.length && (/^( {4}|\t)/.test(lines_value[index_value]) === true || lines_value[index_value].trim() === "")) {
+                        indented_lines.push(lines_value[index_value].replace(/^( {4}|\t)/, ""));
+                        index_value++;
+                    }
+                    html_parts.push("<pre><code>" + escape_html(indented_lines.join("\n").replace(/\n+$/, "")) + "</code></pre>");
+                    continue;
+                }
+
+                if (index_value + 1 < lines_value.length && line_value.indexOf("|") !== -1) {
+                    table_result = render_table(lines_value, index_value);
+                    if (table_result !== null) {
+                        flush_paragraph();
+                        html_parts.push(table_result.html);
+                        index_value = table_result.next_index;
+                        continue;
+                    }
+                }
+
+                heading_match = line_value.match(/^(#{1,6})\s+(.+?)\s*#*$/);
+                if (heading_match !== null) {
+                    flush_paragraph();
+                    html_parts.push("<h" + heading_match[1].length + ">" + parse_inline(heading_match[2]) + "</h" + heading_match[1].length + ">");
+                    index_value++;
+                    continue;
+                }
+
+                if (index_value + 1 < lines_value.length && /^=+\s*$/.test(lines_value[index_value + 1]) === true) {
+                    flush_paragraph();
+                    html_parts.push("<h1>" + parse_inline(line_value) + "</h1>");
+                    index_value += 2;
+                    continue;
+                }
+
+                if (index_value + 1 < lines_value.length && /^-+\s*$/.test(lines_value[index_value + 1]) === true && line_value.indexOf("|") === -1) {
+                    flush_paragraph();
+                    html_parts.push("<h2>" + parse_inline(line_value) + "</h2>");
+                    index_value += 2;
+                    continue;
+                }
+
+                if (/^\s{0,3}((\*\s*){3,}|(-\s*){3,}|(_\s*){3,})$/.test(line_value) === true) {
+                    flush_paragraph();
+                    html_parts.push("<hr>");
+                    index_value++;
+                    continue;
+                }
+
+                if (/^\s*>/.test(line_value) === true) {
+                    flush_paragraph();
+                    quote_lines = [];
+                    while (index_value < lines_value.length && /^\s*>/.test(lines_value[index_value]) === true) {
+                        quote_lines.push(lines_value[index_value].replace(/^\s*> ?/, ""));
+                        index_value++;
+                    }
+                    html_parts.push("<blockquote>" + render_markdown_blocks(quote_lines.join("\n")) + "</blockquote>");
+                    continue;
+                }
+
+                if (/^(\s*)([-+*]|\d+[.)])\s+/.test(line_value) === true) {
+                    flush_paragraph();
+                    list_result = render_list(lines_value, index_value);
+                    html_parts.push(list_result.html);
+                    index_value = list_result.next_index;
+                    continue;
+                }
+
+                paragraph_lines.push(line_value);
+                index_value++;
+            }
+
+            flush_paragraph();
+            return html_parts.join("\n");
+        }
+
+        function render_markdown(markdown_value) {
+            return render_markdown_blocks(markdown_value);
+        }
+
+        function show_message(message_value, message_type) {
+            message_output.textContent = message_value;
+            message_output.className = message_type;
+        }
+
+        function clear_message() {
+            message_output.textContent = "";
+            message_output.className = "";
+        }
+
+        function hide_generated_url() {
+            url_output_container.className = "";
+            generated_url.textContent = "";
+            generated_url.removeAttribute("href");
+            copy_url_button.disabled = true;
+        }
+
+        function update_input_status() {
+            var text_value = get_plain_text();
+            var current_update_number = ++status_update_number;
+
+            character_count.textContent = text_value.length + (text_value.length === 1 ? " character" : " characters");
+            url_length_status.textContent = "URL length: calculating...";
+            generate_url_button.disabled = true;
+            hide_generated_url();
+
+            create_best_url_from_text(text_value).then(function (encoding_result) {
+                var current_url_length = encoding_result.url_value.length;
+                var remaining_url_characters = maximum_url_length - current_url_length;
+
+                if (current_update_number !== status_update_number) {
+                    return;
+                }
+
+                url_length_status.textContent =
+                    "URL length: " + current_url_length.toLocaleString() +
+                    " / " + maximum_url_length.toLocaleString() +
+                    " | Mode: " + encoding_result.mode_name +
+                    " | Remaining: " + Math.max(0, remaining_url_characters).toLocaleString();
+
+                if (remaining_url_characters < 0) {
+                    set_plain_text(last_valid_text);
+                    show_message("The most recent input was removed because it would exceed the 65,536-character URL limit.", "error");
+                    update_input_status();
+                    return;
+                }
+
+                last_valid_text = text_value;
+                generate_url_button.disabled = false;
+                if (message_output.className === "error") {
+                    clear_message();
+                }
+            }).catch(function (error_value) {
+                if (current_update_number !== status_update_number) {
+                    return;
+                }
+                show_message("The text could not be encoded: " + error_value.message, "error");
+            });
+        }
+
+        function generate_url() {
+            var text_value = get_plain_text();
+
+            generate_url_button.disabled = true;
+            show_message("Generating the shortest supported URL...", "success");
+
+            create_best_url_from_text(text_value).then(function (encoding_result) {
+                if (encoding_result.url_value.length > maximum_url_length) {
+                    show_message("The Markdown is too large to create a URL within the 65,536-character limit.", "error");
+                    generate_url_button.disabled = false;
+                    return;
+                }
+
+                generated_url.textContent = encoding_result.url_value;
+                generated_url.href = encoding_result.url_value;
+                url_output_container.className = "visible";
+                copy_url_button.disabled = false;
+                generate_url_button.disabled = false;
+                show_message("The view URL was generated using " + encoding_result.mode_name + ".", "success");
+            }).catch(function (error_value) {
+                generate_url_button.disabled = false;
+                show_message("The URL could not be generated: " + error_value.message, "error");
+            });
+
+            return true;
+        }
+
+        function fallback_copy_url(url_value) {
+            var temporary_textarea = document.createElement("textarea");
+            temporary_textarea.value = url_value;
+            temporary_textarea.setAttribute("readonly", "readonly");
+            temporary_textarea.style.position = "fixed";
+            temporary_textarea.style.left = "-9999px";
+            document.body.appendChild(temporary_textarea);
+            temporary_textarea.select();
+
+            try {
+                document.execCommand("copy");
+                show_message("The generated URL was copied to the clipboard.", "success");
+            } catch (error_value) {
+                show_message("The URL could not be copied automatically.", "error");
+            }
+
+            document.body.removeChild(temporary_textarea);
+        }
+
+        function copy_generated_url() {
+            var url_value = generated_url.textContent;
+
+            if (url_value === "") {
+                show_message("Generate a URL before trying to copy it.", "error");
+                return false;
+            }
+
+            if (navigator.clipboard !== undefined && navigator.clipboard.writeText !== undefined) {
+                navigator.clipboard.writeText(url_value).then(function () {
+                    show_message("The generated URL was copied to the clipboard.", "success");
+                }).catch(function () {
+                    fallback_copy_url(url_value);
+                });
+            } else {
+                fallback_copy_url(url_value);
+            }
+
+            return true;
+        }
+
+        function start_create_mode() {
+            document.title = "Markdown URL Publisher";
+            create_mode.style.display = "block";
+            view_mode.className = "";
+            view_error.className = "";
+            last_valid_text = "";
+            update_input_status();
+        }
+
+        function start_view_mode(encoded_value) {
+            create_mode.style.display = "none";
+            view_mode.className = "visible";
+            view_error.className = "";
+
+            decode_text_value(encoded_value).then(function (decoded_text) {
+                markdown_document.innerHTML = render_markdown(decoded_text);
+                var first_heading = markdown_document.querySelector("h1, h2, h3, h4, h5, h6");
+                document.title = first_heading !== null ? first_heading.textContent : "Markdown Document";
+            }).catch(function (error_value) {
+                view_mode.className = "";
+                view_error.textContent = "The document could not be decoded: " + error_value.message;
+                view_error.className = "visible";
+                document.title = "Document Error";
+            });
+        }
+
+        function initialize_page() {
+            var search_parameters = new URLSearchParams(window.location.search);
+            var encoded_value = null;
+
+            if (search_parameters.has(encoded_text_parameter_name) === false) {
+                start_create_mode();
+                return;
+            }
+
+            encoded_value = search_parameters.get(encoded_text_parameter_name);
+            if (encoded_value === null || encoded_value === "") {
+                start_view_mode("");
+                return;
+            }
+
+            start_view_mode(encoded_value);
+        }
+
+        text_input.addEventListener("input", function () {
+            update_input_status();
+        });
+
+        text_input.addEventListener("paste", function (event_value) {
+            var pasted_text = "";
+            event_value.preventDefault();
+            if (event_value.clipboardData !== null) {
+                pasted_text = event_value.clipboardData.getData("text/plain");
+            }
+            document.execCommand("insertText", false, pasted_text);
+        });
+
+        generate_url_button.addEventListener("click", function () {
+            generate_url();
+        });
+
+        copy_url_button.addEventListener("click", function () {
+            copy_generated_url();
+        });
+
+        initialize_page();
+    </script>
+</body>
+</html>
