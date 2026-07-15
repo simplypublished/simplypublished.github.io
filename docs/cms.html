@@ -400,9 +400,9 @@
 <body>
     <main id="create_mode">
         <h1>Publisher</h1>
-        <p>Enter Markdown, then generate a URL that opens as a clean rendered document.</p>
+        <p>Write your article in basic Markdown, and then generate a URL for sharing.</p>
 
-        <label class="text-input-label" for="text_input">Markdown text</label>
+        <label class="text-input-label" for="text_input">Article Content</label>
         <div id="text_input" contenteditable="true" role="textbox" aria-multiline="true" spellcheck="true"></div>
 
         <div class="status-row">
@@ -418,14 +418,13 @@
         <div id="message_output" aria-live="polite"></div>
 
         <div id="url_output_container">
-            <strong>Generated view URL</strong>
+            <strong>Article URL</strong>
             <a id="generated_url" href="#"></a>
         </div>
 
         <p class="small-note">
-            The maximum generated URL length is 65,536 characters. The page automatically selects plain Base64URL or
-            DEFLATE-compressed Base64URL encoding, whichever is shorter. This obscures and compresses the text but does
-            not encrypt it. Raw HTML in Markdown is displayed as text.
+            The maximum generated URL length is 65,536 characters, but depending on where you share the URL, you may need to keep it much shorter. The page automatically selects plain Base64URL or
+            DEFLATE-compressed Base64URL encoding, depending on which is shorter.
         </p>
     </main>
 
@@ -1039,7 +1038,7 @@
                 url_output_container.className = "visible";
                 copy_url_button.disabled = false;
                 generate_url_button.disabled = false;
-                show_message("The view URL was generated using " + encoding_result.mode_name + ".", "success");
+                show_message("The article URL was generated using " + encoding_result.mode_name + ".", "success");
             }).catch(function (error_value) {
                 generate_url_button.disabled = false;
                 show_message("The URL could not be generated: " + error_value.message, "error");
