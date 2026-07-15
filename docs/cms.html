@@ -395,9 +395,136 @@
                 white-space: pre-wrap;
             }
         }
+        
+        
+   /* ==========================================
+   Simply Published Header
+   ========================================== */
+
+.sp-top-bar {
+    width: 100%;
+    height: 18px;
+    background: #ed1769;
+}
+
+.sp-banner {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background-color: #FFFFFF;
+    overflow: hidden;
+}
+
+.sp-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /*background: rgba(0,0,0,0.35);*/
+}
+
+.sp-banner-overlay {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.sp-banner h1 {
+    margin: 0;
+    color: #ed1769;
+    font-family: Arial, Helvetica, sans-serif;
+    /* font-size: 2rem;
+    font-weight: 700; */
+
+	font-size: clamp(2rem, 4vw, 3rem);
+	line-height: 0.94;
+	letter-spacing: -0.088em;
+	font-weight: 900;    
+    
+    /* text-shadow:
+        0 2px 8px rgba(0,0,0,0.65),
+        0 0 2px rgba(0,0,0,0.8); */
+}
+
+@media (max-width: 700px) {
+
+    .sp-top-bar {
+        height: 14px;
+    }
+
+    .sp-banner {
+        height: 100px;
+    }
+
+    .sp-banner h1 {
+        font-size: 1.6rem;
+    }
+
+}
+
+.sp-banner2 {
+	margin-top: 69px;
+	margin-bottom: 69px;
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background-image: url("banner2.jpg");
+    /* background-size: cover; */
+    /* background-position: center; */
+    /* background-repeat: no-repeat; */
+    background-repeat: repeat;
+    overflow: hidden;
+}
+
+.sp-banner2::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+}
+
+.sp-banner2-overlay {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    text-align: center;
+}
+
+@media print {
+   .sp-top-bar {
+        display: none !important;
+    }
+    
+
+    .sp-banner {
+        display: none !important;
+    }
+
+     .sp-banner2 {
+        display: none !important;
+    }
+}
     </style>
 </head>
 <body>
+
+<!-- Simply Published Header -->
+<div class="sp-top-bar"></div>
+
+<header class="sp-banner">
+    <div class="sp-banner-overlay">
+        <a href="index.html"><h1>Simply Published</h1></a>
+    </div>
+</header>
+
     <main id="create_mode">
         <h1>Publisher</h1>
         <p>Write your article in basic Markdown, and then generate a URL for sharing.</p>
@@ -433,6 +560,12 @@
     </main>
 
     <div id="view_error" role="alert"></div>
+
+<footer class="sp-banner2">
+    <div class="sp-banner2-overlay">
+        
+    </div>
+</footer>
 
     <script>
         "use strict";

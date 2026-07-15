@@ -1,0 +1,18 @@
+# Legal
+
+**Effective as of July 15, 2026.**
+
+## Terms of Service
+
+You agree not to use our service in any manner which violates Canadian law or other applicable law, would cause abnormal disruption to our services, violates our licensing terms, or violates the following restrictions:
+
+* You are not permitted to share articles if they are incomplete.
+* You are not permitted to encode, or share articles if they are knowingly inaccurate, intentionally misleading, misrepresent who you are, or misrepresent any affiliation with Simply Published. You are not required identify yourself in articles. You are free to use a pen name, so long as you make it clear that's what it is.
+
+## Privacy Policy
+
+We don't collect any information about you, but our hosting provider may.
+
+## Licensing
+
+The [core of our website](https://github.com/simplypublished/simplypublished.github.io) is licensed under the terms of the [Ritchey Permissive License v19](/ritchey-permissive-license-v19.txt). [Image assets](https://github.com/simplypublished/image-library) we provide for use in articles are dedicated to the Public Domain via the [Ritchey Public Domain Dedication v1](/ritchey-public-domain-dedication-v1.txt). Articles published through the platform remain the property of their owners.
